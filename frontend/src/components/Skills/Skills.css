@@ -1,0 +1,184 @@
+/* ===================================================
+   SKILLS SECTION — CLEAN PROFESSIONAL
+   =================================================== */
+
+.skills-section {
+  background: var(--bg-primary);
+  position: relative;
+}
+
+/* ─── Orbs ─── */
+.skills-orb-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(0, 188, 255, 0.08) 0%, transparent 70%);
+  top: 0; right: -180px;
+}
+.skills-orb-2 {
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, rgba(37, 80, 254, 0.08) 0%, transparent 70%);
+  bottom: 0; left: -120px;
+}
+
+/* ─── Filters ─── */
+.skill-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+
+.filter-btn {
+  padding: 7px 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-main);
+  transition: all 0.2s ease;
+  letter-spacing: 0.01em;
+}
+
+.filter-btn:hover {
+  border-color: rgba(0, 188, 255, 0.4);
+  color: var(--text-primary);
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, var(--royal-blue), var(--cyan));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 3px 16px rgba(37, 80, 254, 0.3);
+}
+
+/* ─── Grid ─── */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Skill Card ─── */
+.skill-card {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: rgba(28, 32, 48, 0.45);
+  border: 1px solid #1C2030;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.skill-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Left accent stripe */
+.skill-accent {
+  width: 3px;
+  flex-shrink: 0;
+  opacity: 0.8;
+  border-radius: 12px 0 0 12px;
+}
+
+/* Main content */
+.skill-content {
+  flex: 1;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Top row */
+.skill-row-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.skill-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.skill-name {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.skill-category {
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+.skill-level {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.skill-level-pct {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+/* ─── Progress bar ─── */
+.skill-bar-bg {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.skill-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+}
+
+/* ─── Hover glow ─── */
+.skill-hover-glow {
+  position: absolute;
+  inset: -80px;
+  border-radius: 50%;
+  opacity: 0;
+  filter: blur(70px);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+}
+
+.skill-card:hover .skill-hover-glow {
+  opacity: 0.05;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 640px) {
+  .skills-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}

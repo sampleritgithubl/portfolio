@@ -1,0 +1,315 @@
+/* ═══════════════════════════════════════════════════════════
+   HERO SCENE — Premium Edition
+   ═══════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
+
+/* ── Section shell ── */
+.hero-scene {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #05070D;
+  padding-top: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Ambient orbs ── */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  pointer-events: none;
+  z-index: 0;
+}
+.orb-cyan {
+  width: 70vw; height: 70vw;
+  background: radial-gradient(circle, rgba(0,188,255,0.18) 0%, transparent 70%);
+  top: -10%; left: -15%;
+}
+.orb-orange {
+  width: 65vw; height: 65vw;
+  background: radial-gradient(circle, rgba(37,80,254,0.22) 0%, transparent 70%);
+  bottom: -15%; right: -15%;
+}
+.orb-violet {
+  width: 40vw; height: 40vw;
+  background: radial-gradient(circle, rgba(77,131,255,0.18) 0%, transparent 70%);
+  top: 25%; left: 28%;
+}
+
+/* ── Subtle grid ── */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+}
+
+/* ── Scene inner ── */
+.scene-inner {
+  position: relative;
+  width: 100%;
+  max-width: 1500px;
+  height: 88vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════
+   BACKGROUND GLOW NAME
+   ═══════════════════════════════ */
+.bg-name {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.82;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+}
+
+.bg-name-word {
+  display: block;
+  font-family: 'Inter', 'Arial Black', sans-serif;
+  font-weight: 900;
+  font-size: clamp(80px, 13vw, 220px);
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  /* Translucent chrome gradient */
+  background: linear-gradient(
+    160deg,
+    rgba(255,255,255,0.00) 0%,
+    rgba(255,255,255,0.18) 35%,
+    rgba(255,255,255,0.05) 65%,
+    rgba(255,255,255,0.00) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* Neon glow — pulses between cyan and violet */
+  animation: namePulseGlow 5s ease-in-out infinite;
+}
+
+.bg-name-word.sub {
+  font-size: clamp(48px, 8.5vw, 145px);
+}
+
+@keyframes namePulseGlow {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 10px rgba(37,80,254,0.65))
+      drop-shadow(0 0 35px rgba(37,80,254,0.35))
+      drop-shadow(0 0 90px rgba(37,80,254,0.18));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 14px rgba(0,188,255,0.70))
+      drop-shadow(0 0 50px rgba(0,188,255,0.40))
+      drop-shadow(0 0 110px rgba(0,188,255,0.20));
+  }
+}
+
+/* ═══════════════════════════════
+   PHOTO — background removed via mix-blend-mode
+   ═══════════════════════════════ */
+.photo-3d-outer {
+  position: relative;
+  z-index: 10;
+  width: 420px;
+  cursor: crosshair;
+  will-change: transform;
+}
+
+/* Ground light puddle */
+.photo-ground-glow {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(37,80,254,0.55) 0%, transparent 70%);
+  filter: blur(18px);
+  animation: groundPulse 3.5s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes groundPulse {
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scaleX(1.0); }
+  50%       { opacity: 0.90; transform: translateX(-50%) scaleX(1.15); }
+}
+
+/*
+  kavindu.png already has a transparent background (processed by rembg AI).
+  No blend mode tricks needed — just clean filters for polish.
+*/
+.photo-no-bg {
+  display: block;
+  width: 100%;
+  height: 640px;
+  object-fit: contain;
+  object-position: bottom center;
+
+  /* Soft bottom fade into the scene */
+  -webkit-mask-image: linear-gradient(to bottom, black 65%, transparent 98%);
+  mask-image: linear-gradient(to bottom, black 65%, transparent 98%);
+
+  /* Visual polish */
+  filter:
+    drop-shadow(0 30px 60px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 0 50px rgba(37, 80, 254, 0.35))
+    brightness(1.05)
+    contrast(1.05);
+}
+
+/* ═══════════════════════════════
+   FLOATING ICONS
+   ═══════════════════════════════ */
+.fi-wrap {
+  position: absolute;
+  z-index: 5;
+  cursor: pointer;
+}
+
+.fi-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border-radius: 16px;
+
+  /* Glass card */
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  /* Coloured glow */
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.45),
+    0 0 12px var(--glow),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+
+  transition: background 0.25s, box-shadow 0.25s;
+}
+
+.fi-box:hover {
+  background: rgba(255,255,255,0.08);
+  box-shadow:
+    0 8px 36px rgba(0,0,0,0.55),
+    0 0 28px var(--glow),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+/* ═══════════════════════════════
+   ZONE LABELS
+   ═══════════════════════════════ */
+.zone-labels {
+  position: absolute;
+  bottom: 2%;
+  width: 88%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 20;
+}
+
+.zone-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 22px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(12px);
+  color: rgba(255,255,255,0.50);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.zpill-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  animation: dotPulse 2s ease-in-out infinite;
+}
+.zpill-cyan   { background: #00BCFF; box-shadow: 0 0 8px rgba(0, 188, 255, 0.8); }
+.zpill-orange { background: #2550FE; box-shadow: 0 0 8px rgba(37, 80, 254, 0.8); }
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.5); opacity: 0.7; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .photo-3d-outer { width: 360px; }
+  .photo-no-bg { height: 560px; }
+}
+@media (max-width: 768px) {
+  /* Keep floating icons visible, but hide the inner ones */
+  .fi-wrap {
+    display: block;
+  }
+  .fi-wrap.fi-hide-mobile {
+    display: none;
+  }
+
+  /* Force remaining icons to the absolute edges to avoid overlapping the central photo */
+  .fi-wrap[style*="left"] {
+    left: 8px !important;
+  }
+  .fi-wrap[style*="right"] {
+    right: 8px !important;
+  }
+
+  /* Shrink icon wrappers and SVGs for mobile layout */
+  .fi-box {
+    padding: 6px;
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .fi-box svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .photo-3d-outer { width: 290px; }
+  .photo-no-bg { height: 440px; }
+  .bg-name-word      { font-size: clamp(56px, 17vw, 90px); }
+  .bg-name-word.sub  { font-size: clamp(34px, 11vw, 56px); }
+  .zone-labels { flex-direction: column; gap: 12px; bottom: 0; }
+}
+
+@media (max-width: 480px) {
+  .photo-3d-outer { width: 240px; }
+  .photo-no-bg    { height: 360px; }
+  .bg-name-word     { font-size: clamp(44px, 14vw, 70px); }
+  .bg-name-word.sub { font-size: clamp(28px, 9vw, 44px); }
+  .hero-scene { padding-top: 64px; }
+  .zone-pill  { font-size: 10px; padding: 6px 14px; }
+  .fi-box svg { width: 18px !important; height: 18px !important; }
+}
+

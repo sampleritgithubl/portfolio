@@ -1,0 +1,398 @@
+/* =======================================================
+   HTML 3D CIRCULAR GALLERY - GLASSMORPHIC STYLING
+   ======================================================= */
+
+.html-circular-gallery-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  padding: 40px 0;
+  margin-top: -20px;
+}
+
+/* ─── 3D Viewport/Scene ─── */
+.gallery-scene {
+  perspective: 1400px;
+  perspective-origin: 50% 35%;
+  position: relative;
+  width: 100%;
+  height: 480px;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: pan-y; /* Allow vertical touch scrolling (page scroll), prevent horizontal browser swipe */
+  user-select: none;
+}
+
+/* ─── 3D Rotating Track ─── */
+.gallery-track {
+  position: absolute;
+  transform-style: preserve-3d;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.gallery-track:active {
+  cursor: grabbing;
+}
+
+/* ─── Card 3D Wrapper ─── */
+.gallery-card-wrapper {
+  position: absolute;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, opacity, filter;
+  transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              filter 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* ─── Glass Card Body ─── */
+.gallery-card {
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 15, 30, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 
+              inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: border-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+              box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+              transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Glow ring effect around card */
+.gallery-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--radius-lg);
+  padding: 1px;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.1), 
+    rgba(255, 255, 255, 0.03) 90%
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.4s ease;
+}
+
+/* Distinct hover styles for active card only */
+.gallery-card.active:hover {
+  border-color: var(--project-color);
+  box-shadow: 0 25px 60px var(--project-color-glow),
+              0 0 30px var(--project-color-glow-dim),
+              inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+.gallery-card.active:hover::after {
+  background: linear-gradient(135deg, var(--project-color), transparent 60%);
+  opacity: 1;
+}
+
+/* ─── Card Media ─── */
+.card-image-container {
+  position: relative;
+  width: 100%;
+  height: 45%;
+  overflow: hidden;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.gallery-card:hover .card-image {
+  transform: scale(1.08);
+}
+
+.card-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom, 
+    rgba(6, 9, 24, 0.1) 0%, 
+    rgba(6, 9, 24, 0.85) 100%
+  );
+  z-index: 1;
+}
+
+.card-tag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 10.5px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  background: rgba(6, 9, 24, 0.8);
+  color: var(--project-color);
+  border: 1px solid var(--project-color);
+  box-shadow: 0 0 10px var(--project-color-glow-dim);
+  z-index: 2;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ─── Card Body ─── */
+.card-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 750;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+
+.card-desc {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-tech-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 16px;
+  margin-top: auto;
+}
+
+.card-tech-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+
+/* ─── Card Actions ─── */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  pointer-events: none;
+}
+
+/* Reveal buttons when card is active */
+.gallery-card-wrapper.active-card .card-actions {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.card-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.card-btn-primary {
+  background: var(--project-color);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 15px var(--project-color-glow);
+}
+
+.card-btn-primary:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--project-color-glow);
+}
+
+.card-btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-btn-secondary:hover {
+  border-color: var(--project-color);
+  color: var(--project-color);
+  background: rgba(255, 255, 255, 0.02);
+  transform: translateY(-2px);
+}
+
+/* ─── Navigation UI Controls ─── */
+.gallery-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+  z-index: 10;
+}
+
+/* Drag indicator text */
+.gallery-drag-prompt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.drag-icon-pulse {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.25); opacity: 1; }
+}
+
+/* Next / Prev buttons row */
+.gallery-navigation {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.nav-btn:hover {
+  background: var(--cyan-dim);
+  border-color: var(--cyan);
+  box-shadow: 0 0 15px var(--cyan-glow);
+  transform: scale(1.08);
+  color: var(--cyan);
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+/* Pagination indicator dots */
+.gallery-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot-btn {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.dot-btn.active {
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* ─── Glowing background aura behind active card ─── */
+.gallery-auras {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+}
+
+.gallery-aura-glow {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.15;
+  transition: background-color 0.8s ease;
+  z-index: 0;
+}
+
+/* ─── Responsive adaptations ─── */
+@media (max-width: 768px) {
+  .gallery-scene {
+    height: 400px;
+    perspective: 1000px;
+    perspective-origin: 50% 32%;
+  }
+  
+  .gallery-controls {
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-scene {
+    height: 360px;
+    perspective: 800px;
+  }
+}

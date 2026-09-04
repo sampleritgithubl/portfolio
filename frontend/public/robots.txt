@@ -1,0 +1,12 @@
+# robots.txt for kavindu-rasanjana.me
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://kavindu-rasanjana.me/sitemap.xml
+
+# Block crawling of API endpoints (if any)
+Disallow: /api/
+
+# Block crawling of assets directories
+Disallow: /assets/

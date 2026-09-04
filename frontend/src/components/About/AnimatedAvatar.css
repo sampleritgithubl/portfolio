@@ -1,0 +1,178 @@
+/* =====================================================
+   ANIMATED AVATAR — Clean Professional Edition
+   ===================================================== */
+
+.av-wrap {
+  position: relative;
+  width: 220px;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Ambient background glow ── */
+.av-bg-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(99, 102, 241, 0.12) 0%,
+    rgba(0, 212, 255, 0.04) 50%,
+    transparent 72%
+  );
+  filter: blur(20px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Photo outer wrapper ── */
+.av-photo-outer {
+  position: relative;
+  z-index: 3;
+  cursor: pointer;
+}
+
+/* ── Gradient border ring ── */
+.av-photo-border {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(
+    135deg,
+    #3b82f6 0%,
+    #8b5cf6 50%,
+    #ec4899 100%
+  );
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    0 0 25px rgba(99, 102, 241, 0.1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.av-photo-outer:hover .av-photo-border {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 35px rgba(99, 102, 241, 0.25);
+}
+
+/* ── Inner photo frame ── */
+.av-photo-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  overflow: hidden;
+  position: relative;
+  /* Fix overflow clip on some mobile browsers */
+  mask-image: radial-gradient(white, black);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+.av-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  filter: brightness(1.02) contrast(1.02) saturate(1.05);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.av-photo-outer:hover .av-photo-img {
+  transform: scale(1.06);
+}
+
+/* ── Subtle gloss highlight overlay ── */
+.av-photo-gloss {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+/* ── Ground shadow beneath photo ── */
+.av-photo-shadow {
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.45) 0%, transparent 75%);
+  filter: blur(6px);
+  opacity: 0.85;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.av-photo-outer:hover .av-photo-shadow {
+  opacity: 0.5;
+  transform: translateX(-50%) scale(0.9);
+  filter: blur(8px);
+}
+
+/* ── Available badge ── */
+.av-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: rgba(6, 9, 24, 0.92);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  border-radius: 100px;
+  font-family: var(--font-main);
+  font-size: 10px;
+  font-weight: 700;
+  color: #22c55e;
+  white-space: nowrap;
+  z-index: 8;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.12), 0 0 24px rgba(34, 197, 94, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.av-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  flex-shrink: 0;
+  animation: avDotPulse 2s ease-in-out infinite;
+}
+
+@keyframes avDotPulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.45; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .av-wrap {
+    width: 180px;
+    height: 215px;
+  }
+  .av-photo-border {
+    width: 140px;
+    height: 140px;
+  }
+  .av-photo-shadow {
+    width: 100px;
+    bottom: -12px;
+  }
+}
+

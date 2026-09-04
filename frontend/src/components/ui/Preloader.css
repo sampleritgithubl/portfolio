@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+.preloader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #05070D;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════
+   MATRIX RAIN CANVAS
+   ═══════════════════════════════ */
+.matrix-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Dark radial vignette over the rain so the card text stays readable */
+.matrix-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(
+    ellipse 70% 70% at 50% 50%,
+    rgba(5, 7, 13, 0.55) 0%,
+    rgba(5, 7, 13, 0.85) 60%,
+    rgba(5, 7, 13, 0.96) 100%
+  );
+  pointer-events: none;
+}
+
+/* Glowing ambient orbs */
+.preloader-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(150px);
+  pointer-events: none;
+  z-index: 3;
+}
+.preloader-orb.orb-1 {
+  width: 50vw; height: 50vw;
+  background: radial-gradient(circle, rgba(37, 80, 254, 0.12) 0%, transparent 70%);
+  top: -10%; left: -10%;
+}
+.preloader-orb.orb-2 {
+  width: 45vw; height: 45vw;
+  background: radial-gradient(circle, rgba(0, 188, 255, 0.12) 0%, transparent 70%);
+  bottom: -10%; right: -10%;
+}
+
+/* ═══════════════════════════════
+   GLASSMORPHIC CONTENT CARD
+   ═══════════════════════════════ */
+.preloader-content-card {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 90%;
+  max-width: 760px;
+  padding: 50px 40px;
+  border-radius: 28px;
+  background: rgba(5, 7, 13, 0.82);
+  border: 1px solid #1C2030;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 
+    0 30px 100px rgba(0, 0, 0, 0.8),
+    0 0 80px rgba(37, 80, 254, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* Badge container */
+.preloader-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  background: rgba(0, 188, 255, 0.08);
+  border: 1px solid rgba(0, 188, 255, 0.25);
+  color: #00BCFF;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  box-shadow: 0 0 20px rgba(0, 188, 255, 0.12);
+}
+.preloader-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00BCFF;
+  box-shadow: 0 0 10px #00BCFF;
+  animation: preloaderDotPulse 2s ease-in-out infinite;
+}
+@keyframes preloaderDotPulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%       { transform: scale(1.4); opacity: 1; }
+}
+
+/* Welcome Title */
+.preloader-hero-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(32px, 4.5vw, 56px);
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  margin: 0 0 16px 0;
+}
+.gradient-preloader-text {
+  background: linear-gradient(135deg, #2550FE 0%, #00BCFF 50%, #4D83FF 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 12px rgba(37, 80, 254, 0.3));
+}
+
+/* Subtitle & Typewriter roles */
+.preloader-hero-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 24px 0;
+  min-height: 38px;
+  letter-spacing: -0.5px;
+}
+.preloader-typewriter {
+  color: #00BCFF;
+  font-weight: 700;
+  text-shadow: 0 0 25px rgba(0, 188, 255, 0.4);
+}
+.preloader-cursor {
+  font-weight: 100;
+  color: #00BCFF;
+  margin-left: 2px;
+}
+
+/* Bio description paragraph */
+.preloader-hero-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(13px, 1.1vw, 15px);
+  color: #A0A5B5;
+  line-height: 1.65;
+  max-width: 620px;
+  margin: 0 0 36px 0;
+}
+
+/* Simulated Buttons */
+.preloader-actions {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 50px;
+}
+.pre-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 28px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.pre-btn.btn-primary {
+  background: linear-gradient(135deg, #2550FE 0%, #00BCFF 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 20px rgba(37, 80, 254, 0.35);
+}
+.pre-btn.btn-secondary {
+  background: rgba(0, 188, 255, 0.05);
+  border: 1px solid #1C2030;
+  color: #00BCFF;
+  backdrop-filter: blur(10px);
+}
+
+/* Progress bar system */
+.preloader-progress-wrap {
+  width: 280px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #1C2030;
+  margin-bottom: 15px;
+}
+.preloader-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #2550FE, #00BCFF);
+  box-shadow: 0 0 8px #2550FE, 0 0 16px #00BCFF;
+}
+
+/* Status loading text */
+.preloader-loading-text {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(0, 255, 65, 0.3);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin: 0;
+  animation: preloaderTextPulse 1.5s infinite ease-in-out;
+}
+@keyframes preloaderTextPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .preloader-content-card {
+    padding: 40px 20px;
+    border-radius: 20px;
+  }
+  .preloader-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 280px;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .pre-btn {
+    width: 100%;
+    padding: 12px;
+  }
+  .preloader-progress-wrap {
+    width: 200px;
+  }
+}

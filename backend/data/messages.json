@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1788518557647",
+    "name": "Test Client",
+    "email": "client@example.com",
+    "subject": "Project Inquiry",
+    "message": "Hi Kavindu, I love your portfolio and would like to hire you.",
+    "createdAt": "2026-09-04T10:42:37.647Z",
+    "read": false
+  },
+  {
+    "id": "1788518516323",
+    "name": "Test Client",
+    "email": "client@example.com",
+    "subject": "Project Inquiry",
+    "message": "Hi Kavindu, I love your portfolio and would like to hire you.",
+    "createdAt": "2026-09-04T10:41:56.323Z",
+    "read": false
+  }
+]
