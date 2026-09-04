@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- ─── Primary Meta Tags ─── -->
-    <title>Kavindu Rasanjana | AI-Powered Full Stack Developer & Mobile App Developer | Sri Lanka</title>
-    <meta name="title" content="Kavindu Rasanjana | AI-Powered Full Stack Developer & Mobile App Developer" />
-    <meta name="description" content="Portfolio of Kavindu Rasanjana — AI-Powered Full Stack Developer & Mobile App Developer from Sri Lanka. Expert in React, Node.js, TypeScript, Python, React Native, Flutter, TensorFlow & Cloud. 10+ projects built. Available for hire." />
-    <meta name="keywords" content="Kavindu Rasanjana, Full Stack Developer, AI Developer, React Developer, Node.js Developer, TypeScript, Python, React Native, Flutter, Mobile App Developer, Sri Lanka Developer, Web Developer Sri Lanka, Machine Learning, TensorFlow, Portfolio, Software Engineer, Rajarata University" />
+    <title>Kavindu Rasanjana — Official Portfolio &amp; Personal Website</title>
+    <meta name="title" content="Kavindu Rasanjana — Official Portfolio &amp; Personal Website" />
+    <meta name="description" content="Official website and portfolio of Kavindu Rasanjana — AI-Powered Full Stack Developer &amp; Mobile App Developer from Sri Lanka. Rajarata University student. 10+ projects." />
+    <meta name="keywords" content="Kavindu Rasanjana, Kavindu, Rasanjana, Kavindu Rasanjana Portfolio, Kavindu Rasanjana Website, Kavindu Rasanjana Developer, Rajarata University, Full Stack Developer Sri Lanka, Software Engineer Sri Lanka" />
     <meta name="author" content="Kavindu Rasanjana" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#060918" />
@@ -49,54 +49,63 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- ─── JSON-LD Structured Data ─── -->
+    <!-- ─── JSON-LD Structured Data (Person & ProfilePage) ─── -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Kavindu Rasanjana",
-        "url": "https://kavindu-rasanjana.me/",
-        "image": "https://kavindu-rasanjana.me/kavindu.png",
-        "jobTitle": "AI-Powered Full Stack Developer & Mobile App Developer",
-        "description": "Undergraduate at Rajarata University of Sri Lanka. Passionate self-taught developer focusing on intelligent, scalable web and mobile solutions.",
-        "email": "mailto:kavindu2001rasanjana@gmail.com",
-        "address": {
-          "@type": "PostalAddress",
-          "addressCountry": "LK",
-          "addressLocality": "Sri Lanka"
-        },
-        "alumniOf": {
-          "@type": "EducationalOrganization",
-          "name": "Rajarata University of Sri Lanka"
-        },
-        "sameAs": [
-          "https://github.com/sampleritgithubl",
-          "https://www.linkedin.com/in/kavindu-rasanjana-08002b266/",
-          "https://twitter.com/kavindurasanjana"
-        ],
-        "knowsAbout": [
-          "React.js", "TypeScript", "Next.js", "Three.js",
-          "Node.js", "Express.js", "Python", "FastAPI",
-          "MongoDB", "PostgreSQL", "React Native", "Flutter",
-          "TensorFlow", "Docker", "AWS", "Git",
-          "Full Stack Development", "Mobile App Development",
-          "Artificial Intelligence", "Machine Learning"
+        "@graph": [
+          {
+            "@type": "ProfilePage",
+            "@id": "https://kavindu-rasanjana.me/#profilepage",
+            "url": "https://kavindu-rasanjana.me/",
+            "name": "Kavindu Rasanjana - Official Portfolio & Profile",
+            "mainEntity": {
+              "@id": "https://kavindu-rasanjana.me/#person"
+            }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://kavindu-rasanjana.me/#person",
+            "name": "Kavindu Rasanjana",
+            "url": "https://kavindu-rasanjana.me/",
+            "image": "https://kavindu-rasanjana.me/kavindu.png",
+            "jobTitle": "AI-Powered Full Stack Developer & Mobile App Developer",
+            "description": "Undergraduate at Rajarata University of Sri Lanka. Passionate self-taught developer focusing on intelligent, scalable web and mobile solutions.",
+            "email": "mailto:kavindu2001rasanjana@gmail.com",
+            "address": {
+              "@type": "PostalAddress",
+              "addressCountry": "LK",
+              "addressLocality": "Sri Lanka"
+            },
+            "alumniOf": {
+              "@type": "EducationalOrganization",
+              "name": "Rajarata University of Sri Lanka"
+            },
+            "sameAs": [
+              "https://github.com/sampleritgithubl",
+              "https://www.linkedin.com/in/kavindu-rasanjana-08002b266/",
+              "https://twitter.com/kavindurasanjana"
+            ],
+            "knowsAbout": [
+              "React.js", "TypeScript", "Next.js", "Three.js",
+              "Node.js", "Express.js", "Python", "FastAPI",
+              "MongoDB", "PostgreSQL", "React Native", "Flutter",
+              "TensorFlow", "Docker", "AWS", "Git",
+              "Full Stack Development", "Mobile App Development",
+              "Artificial Intelligence", "Machine Learning"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://kavindu-rasanjana.me/#website",
+            "name": "Kavindu Rasanjana Portfolio",
+            "url": "https://kavindu-rasanjana.me/",
+            "description": "Official portfolio website of Kavindu Rasanjana — AI-Powered Full Stack Developer & Mobile App Developer from Sri Lanka.",
+            "author": {
+              "@id": "https://kavindu-rasanjana.me/#person"
+            }
+          }
         ]
-      }
-    </script>
-
-    <!-- ─── WebSite Structured Data (for Sitelinks Search Box) ─── -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Kavindu Rasanjana Portfolio",
-        "url": "https://kavindu-rasanjana.me/",
-        "description": "Official portfolio website of Kavindu Rasanjana — AI-Powered Full Stack Developer & Mobile App Developer from Sri Lanka.",
-        "author": {
-          "@type": "Person",
-          "name": "Kavindu Rasanjana"
-        }
       }
     </script>
   </head>

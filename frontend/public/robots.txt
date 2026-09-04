@@ -5,8 +5,8 @@ Allow: /
 # Sitemap
 Sitemap: https://kavindu-rasanjana.me/sitemap.xml
 
-# Block crawling of API endpoints (if any)
+# Block crawling of API endpoints and admin panel
 Disallow: /api/
+Disallow: /admin
+Disallow: /admin/
 
-# Block crawling of assets directories
-Disallow: /assets/
