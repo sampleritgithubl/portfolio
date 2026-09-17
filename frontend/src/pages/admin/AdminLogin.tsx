@@ -12,6 +12,14 @@ export default function AdminLogin() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Ensure native browser cursor is enabled in admin login
+  useEffect(() => {
+    document.body.classList.add('admin-mode');
+    return () => {
+      document.body.classList.remove('admin-mode');
+    };
+  }, []);
+
   // If already logged in, redirect immediately
   useEffect(() => {
     const token = localStorage.getItem('adminToken');

@@ -1,5 +1,6 @@
 import Preloader from '../components/ui/Preloader';
 import CustomCursor from '../components/ui/CustomCursor';
+import SmoothScroll from '../components/ui/SmoothScroll';
 import Navbar from '../components/Navbar/Navbar';
 import Hero from '../components/Hero/Hero';
 import About from '../components/About/About';
@@ -15,6 +16,7 @@ export default function Home() {
     <>
       <Preloader />
       <CustomCursor />
+      <SmoothScroll />
       <Navbar />
       <main>
         <Hero />

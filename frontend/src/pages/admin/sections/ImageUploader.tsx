@@ -8,6 +8,55 @@ interface ImageUploaderProps {
   label?: string;
 }
 
+// Client-side image compression to lightweight, high-quality WebP Data URL
+function compressImage(file: File, maxWidth = 1200, quality = 0.82): Promise<{ dataUrl: string; sizeKb: number }> {
+  return new Promise((resolve, reject) => {
+    if (file.type === 'image/svg+xml') {
+      const reader = new FileReader();
+      reader.onload = () => resolve({ dataUrl: reader.result as string, sizeKb: Math.round(file.size / 1024) });
+      reader.onerror = () => reject(new Error('Failed to read SVG file'));
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve({ dataUrl: e.target?.result as string, sizeKb: Math.round(file.size / 1024) });
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convert to WebP (fallback to JPEG if browser does not support WebP encoding)
+        let dataUrl = canvas.toDataURL('image/webp', quality);
+        if (!dataUrl.startsWith('data:image/webp')) {
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
+        }
+
+        const sizeKb = Math.round((dataUrl.length * 3) / 4 / 1024);
+        resolve({ dataUrl, sizeKb });
+      };
+      img.onerror = () => reject(new Error('Failed to load image for processing'));
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function ImageUploader({ value, onChange, label = 'Cover Image' }: ImageUploaderProps) {
   const [mode, setMode] = useState<'upload' | 'url'>('upload');
   const [dragging, setDragging] = useState(false);
@@ -20,7 +69,7 @@ export default function ImageUploader({ value, onChange, label = 'Cover Image' }
   const uploadFile = useCallback(async (file: File) => {
     setUploading(true);
     setUploadError(null);
-    setProgress(10);
+    setProgress(15);
 
     // Validate on client side
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
@@ -30,65 +79,45 @@ export default function ImageUploader({ value, onChange, label = 'Cover Image' }
       setProgress(0);
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      setUploadError('File too large. Maximum 5MB allowed.');
+    if (file.size > 8 * 1024 * 1024) {
+      setUploadError('File too large. Maximum 8MB allowed.');
       setUploading(false);
       setProgress(0);
       return;
     }
 
-    setProgress(30);
-
     try {
-      const token = localStorage.getItem('adminToken');
-      const formData = new FormData();
-      formData.append('image', file);
+      setProgress(40);
 
-      // Use XMLHttpRequest for progress tracking
-      const xhr = new XMLHttpRequest();
+      // 1. Convert to optimized WebP Data URL (guarantees permanent persistence even if backend sleeps/restarts)
+      const { dataUrl, sizeKb } = await compressImage(file);
+      setProgress(75);
 
-      const uploadPromise = new Promise<{ success: boolean; url?: string; error?: string; originalName?: string }>((resolve, reject) => {
-        xhr.upload.addEventListener('progress', (e) => {
-          if (e.lengthComputable) {
-            const pct = Math.round((e.loaded / e.total) * 70) + 30; // 30-100%
-            setProgress(pct);
-          }
-        });
+      // 2. Immediately set the Data URL so it is permanently saved in the portfolio data
+      onChange(dataUrl);
+      setUploadedFileName(`${file.name} (Optimized WebP • ${sizeKb} KB)`);
+      setProgress(90);
 
-        xhr.addEventListener('load', () => {
-          try {
-            const response = JSON.parse(xhr.responseText);
-            if (xhr.status >= 200 && xhr.status < 300 && response.success) {
-              resolve(response);
-            } else {
-              resolve({ success: false, error: response.error || 'Upload failed' });
-            }
-          } catch {
-            resolve({ success: false, error: 'Invalid server response' });
-          }
-        });
+      // 3. Also upload raw file to backend as server backup (if backend reachable)
+      try {
+        const token = localStorage.getItem('adminToken');
+        if (token) {
+          const formData = new FormData();
+          formData.append('image', file);
+          fetch(`${API_BASE}/api/admin/upload`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData
+          }).catch(() => {
+            // Server copy is secondary; dataUrl is already 100% saved
+          });
+        }
+      } catch (_) {}
 
-        xhr.addEventListener('error', () => reject(new Error('Network error')));
-        xhr.addEventListener('abort', () => reject(new Error('Upload cancelled')));
-
-        xhr.open('POST', `${API_BASE}/api/admin/upload`);
-        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-        xhr.send(formData);
-      });
-
-      const result = await uploadPromise;
-
-      if (result.success && result.url) {
-        setProgress(100);
-        onChange(result.url);
-        setUploadedFileName(result.originalName || file.name);
-        setUploadError(null);
-      } else {
-        setUploadError(result.error || 'Upload failed');
-        setProgress(0);
-      }
+      setProgress(100);
+      setUploadError(null);
     } catch (err: any) {
-      setUploadError(err.message || 'Upload failed');
+      setUploadError(err.message || 'Image upload failed');
       setProgress(0);
     } finally {
       setUploading(false);

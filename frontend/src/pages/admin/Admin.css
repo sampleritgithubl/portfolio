@@ -14,6 +14,61 @@
   --admin-sidebar-w: 260px;
 }
 
+/* ─── Restore System Cursor in Admin Panel ─── */
+body.admin-mode,
+body.admin-mode *,
+.admin-login-wrapper,
+.admin-login-wrapper *,
+.admin-layout,
+.admin-layout *,
+.admin-modal-overlay,
+.admin-modal-overlay * {
+  cursor: default !important;
+}
+
+body.admin-mode button,
+body.admin-mode a,
+body.admin-mode select,
+body.admin-mode input[type="button"],
+body.admin-mode input[type="submit"],
+body.admin-mode input[type="checkbox"],
+body.admin-mode .admin-btn,
+body.admin-mode .admin-nav-item,
+body.admin-mode .img-uploader-tab,
+body.admin-mode .img-upload-dropzone,
+body.admin-mode .img-preview-remove,
+.admin-login-wrapper button,
+.admin-login-wrapper a,
+.admin-layout button,
+.admin-layout a,
+.admin-layout select,
+.admin-layout .admin-btn,
+.admin-layout .admin-nav-item,
+.admin-layout .img-uploader-tab,
+.admin-layout .img-upload-dropzone,
+.admin-layout .img-preview-remove,
+.admin-modal-overlay button {
+  cursor: pointer !important;
+}
+
+body.admin-mode input[type="text"],
+body.admin-mode input[type="email"],
+body.admin-mode input[type="password"],
+body.admin-mode input[type="number"],
+body.admin-mode input[type="url"],
+body.admin-mode textarea,
+.admin-login-wrapper input,
+.admin-layout input[type="text"],
+.admin-layout input[type="email"],
+.admin-layout input[type="password"],
+.admin-layout input[type="number"],
+.admin-layout input[type="url"],
+.admin-layout textarea,
+.admin-modal-overlay input,
+.admin-modal-overlay textarea {
+  cursor: text !important;
+}
+
 /* ─── Admin Login Page ─── */
 .admin-login-wrapper {
   min-height: 100vh;

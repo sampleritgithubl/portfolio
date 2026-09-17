@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiFolder, FiAward, FiCode, FiMail, FiArrowRight } from 'react-icons/fi';
+import { FiFolder, FiAward, FiCode, FiMail, FiArrowRight, FiDownload, FiRefreshCw } from 'react-icons/fi';
 import { usePortfolio, API_BASE } from '../../../context/PortfolioContext';
 
 interface AdminOverviewProps {
@@ -7,7 +7,7 @@ interface AdminOverviewProps {
 }
 
 export default function AdminOverview({ onNavigate }: AdminOverviewProps) {
-  const { data } = usePortfolio();
+  const { data, resetToDefaults } = usePortfolio();
   const [messages, setMessages] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -120,6 +120,47 @@ export default function AdminOverview({ onNavigate }: AdminOverviewProps) {
             </p>
             <button className="admin-btn admin-btn-outline" style={{ fontSize: '12px', padding: '6px 14px' }} onClick={() => onNavigate('messages')}>
               Open Inbox <FiArrowRight size={14} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Data Security & Backup Card */}
+      <div className="admin-panel-card" style={{ marginTop: '24px' }}>
+        <div className="admin-card-header">
+          <div>
+            <h3 className="admin-card-heading">Data Backup & Reset</h3>
+            <p className="admin-card-desc">Download a complete backup of your portfolio data (JSON) or reset to defaults.</p>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              type="button"
+              className="admin-btn admin-btn-outline"
+              onClick={() => {
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `portfolio-backup-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+            >
+              <FiDownload size={14} />
+              Export Backup (JSON)
+            </button>
+            <button
+              type="button"
+              className="admin-btn admin-btn-danger"
+              onClick={() => {
+                if (window.confirm('Reset all changes and restore original default data?')) {
+                  resetToDefaults();
+                  alert('Portfolio data reset to defaults.');
+                }
+              }}
+            >
+              <FiRefreshCw size={14} />
+              Reset to Defaults
             </button>
           </div>
         </div>

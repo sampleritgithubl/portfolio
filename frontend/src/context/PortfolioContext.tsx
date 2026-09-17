@@ -77,6 +77,7 @@ interface PortfolioContextType {
   error: string | null;
   refreshData: () => Promise<void>;
   updateDataLocally: (newData: Partial<PortfolioData>) => void;
+  resetToDefaults: () => void;
 }
 
 const defaultData: PortfolioData = {
@@ -87,12 +88,36 @@ const defaultData: PortfolioData = {
   experience: defaultExperience
 };
 
+const STORAGE_KEY = 'kavindu_portfolio_data_v2';
+
+function getInitialData(): PortfolioData {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === 'object') {
+        return {
+          personalInfo: parsed.personalInfo || defaultPersonalInfo,
+          skills: parsed.skills || defaultSkills,
+          projects: parsed.projects || defaultProjects,
+          certifications: parsed.certifications || defaultCertifications,
+          experience: parsed.experience || defaultExperience,
+        };
+      }
+    }
+  } catch (e) {
+    console.warn('Could not read saved portfolio from localStorage', e);
+  }
+  return defaultData;
+}
+
 const PortfolioContext = createContext<PortfolioContextType>({
   data: defaultData,
   loading: false,
   error: null,
   refreshData: async () => {},
-  updateDataLocally: () => {}
+  updateDataLocally: () => {},
+  resetToDefaults: () => {}
 });
 
 export const API_BASE =
@@ -100,9 +125,17 @@ export const API_BASE =
   (import.meta.env.DEV ? 'http://localhost:5000' : 'https://kavindu-portfolio-backend.onrender.com');
 
 export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [data, setData] = useState<PortfolioData>(defaultData);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [data, setData] = useState<PortfolioData>(getInitialData);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const saveToStorage = (newData: PortfolioData) => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
+    } catch (e) {
+      console.warn('Could not cache portfolio to localStorage', e);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -110,18 +143,19 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const res = await fetch(`${API_BASE}/api/portfolio`);
       if (res.ok) {
         const json = await res.json();
-        setData({
+        const serverData: PortfolioData = {
           personalInfo: json.personalInfo || defaultPersonalInfo,
           skills: json.skills || defaultSkills,
           projects: json.projects || defaultProjects,
           certifications: json.certifications || defaultCertifications,
           experience: json.experience || defaultExperience,
-        });
+        };
+        setData(serverData);
+        saveToStorage(serverData);
         setError(null);
       }
     } catch (err) {
-      console.warn('Backend portfolio API unreachable, using static fallback.', err);
-      // Fallback remains defaultData
+      console.warn('Backend portfolio API unreachable, using cached/static data.', err);
     } finally {
       setLoading(false);
     }
@@ -132,7 +166,18 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, []);
 
   const updateDataLocally = (newData: Partial<PortfolioData>) => {
-    setData((prev) => ({ ...prev, ...newData }));
+    setData((prev) => {
+      const updated = { ...prev, ...newData };
+      saveToStorage(updated);
+      return updated;
+    });
+  };
+
+  const resetToDefaults = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (_) {}
+    setData(defaultData);
   };
 
   return (
@@ -142,7 +187,8 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         loading,
         error,
         refreshData: fetchData,
-        updateDataLocally
+        updateDataLocally,
+        resetToDefaults
       }}
     >
       {children}

@@ -76,11 +76,17 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
-  cursor: none;
 }
 
-body * {
-  cursor: none !important;
+/* Custom cursor only on non-admin pages on devices with mice */
+@media (hover: hover) and (pointer: fine) {
+  body:not(.admin-mode) {
+    cursor: none;
+  }
+
+  body:not(.admin-mode) *:not(input):not(textarea):not(select) {
+    cursor: none;
+  }
 }
 
 a {

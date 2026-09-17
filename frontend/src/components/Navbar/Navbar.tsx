@@ -82,7 +82,16 @@ export default function Navbar() {
   }, []);
 
   const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    const lenis = (window as any).__lenis;
+    if (lenis) {
+      lenis.scrollTo(`#${id}`, { offset: -70, duration: 1.2 });
+    } else {
+      const el = document.getElementById(id);
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    }
     setMenuOpen(false);
   };
 

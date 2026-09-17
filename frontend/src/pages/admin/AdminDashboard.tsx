@@ -27,6 +27,14 @@ export default function AdminDashboard() {
   const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
 
+  // Ensure native browser cursor is enabled in admin
+  useEffect(() => {
+    document.body.classList.add('admin-mode');
+    return () => {
+      document.body.classList.remove('admin-mode');
+    };
+  }, []);
+
   // Protect route
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
