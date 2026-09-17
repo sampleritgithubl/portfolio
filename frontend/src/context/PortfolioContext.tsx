@@ -95,7 +95,9 @@ const PortfolioContext = createContext<PortfolioContextType>({
   updateDataLocally: () => {}
 });
 
-export const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+export const API_BASE =
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.DEV ? 'http://localhost:5000' : 'https://kavindu-portfolio-backend.onrender.com');
 
 export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [data, setData] = useState<PortfolioData>(defaultData);
