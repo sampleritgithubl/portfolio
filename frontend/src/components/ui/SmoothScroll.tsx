@@ -10,12 +10,23 @@ declare global {
 
 export default function SmoothScroll() {
   useEffect(() => {
-    // Initialize Lenis with tuned cinematic physics
+    // Check if device is a touch-primary screen (mobile/tablet)
+    const isTouchDevice =
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.matchMedia('(pointer: coarse)').matches;
+
+    // On mobile devices, native hardware-accelerated touch momentum is smoothest.
+    // Lenis is optimized for desktop mousewheel/trackpad gliding.
+    if (isTouchDevice) {
+      return;
+    }
+
+    // Initialize Lenis with tuned cinematic physics on desktop
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 1.5,
       infinite: false
     });
 

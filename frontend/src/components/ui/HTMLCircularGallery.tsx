@@ -189,17 +189,24 @@ export default function HTMLCircularGallery({ projects, bend = 120 }: HTMLCircul
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const startY = useRef(0);
+  const isIntentLocked = useRef(false);
+  const isHorizontalDrag = useRef(false);
+
   // Gesture/Pointer Handlers
   const handlePointerDown = (e: React.PointerEvent) => {
-    // Only drag with left mouse button
+    // Only drag with left mouse button if mouse
     if (e.button !== 0 && e.pointerType === 'mouse') return;
     
     isDragging.current = true;
     startX.current = e.clientX;
+    startY.current = e.clientY;
     startRotation.current = targetRotation.current;
     dragDistance.current = 0;
+    isIntentLocked.current = false;
+    isHorizontalDrag.current = e.pointerType === 'mouse'; // Mouse defaults to horizontal
     
-    if (trackRef.current) {
+    if (e.pointerType === 'mouse' && trackRef.current) {
       trackRef.current.setPointerCapture(e.pointerId);
     }
   };
@@ -207,19 +214,47 @@ export default function HTMLCircularGallery({ projects, bend = 120 }: HTMLCircul
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging.current) return;
     const deltaX = e.clientX - startX.current;
+    const deltaY = e.clientY - startY.current;
     dragDistance.current = Math.abs(deltaX);
 
-    // Convert pixel delta to rotation angle step (adjust drag sensitivity)
-    const sensitivity = 0.18;
-    targetRotation.current = startRotation.current + deltaX * sensitivity;
+    // On touch screens, intelligently distinguish between vertical page scroll and horizontal gallery rotation
+    if (e.pointerType === 'touch' && !isIntentLocked.current) {
+      if (Math.abs(deltaY) > 6 && Math.abs(deltaY) >= Math.abs(deltaX)) {
+        // Vertical page scroll gesture detected -> release gallery touch instantly so page scrolls smoothly
+        isDragging.current = false;
+        isIntentLocked.current = true;
+        isHorizontalDrag.current = false;
+        return;
+      }
+      if (Math.abs(deltaX) > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal gallery rotation detected -> lock horizontal drag
+        isIntentLocked.current = true;
+        isHorizontalDrag.current = true;
+        if (trackRef.current) {
+          try {
+            trackRef.current.setPointerCapture(e.pointerId);
+          } catch (_) {}
+        }
+      }
+    }
+
+    if (isHorizontalDrag.current) {
+      // Convert pixel delta to rotation angle step
+      const sensitivity = 0.22;
+      targetRotation.current = startRotation.current + deltaX * sensitivity;
+    }
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
-    if (!isDragging.current) return;
+    if (!isDragging.current && !isHorizontalDrag.current) return;
     isDragging.current = false;
+    isHorizontalDrag.current = false;
+    isIntentLocked.current = false;
     
     if (trackRef.current) {
-      trackRef.current.releasePointerCapture(e.pointerId);
+      try {
+        trackRef.current.releasePointerCapture(e.pointerId);
+      } catch (_) {}
     }
 
     // Snap to the nearest card angle

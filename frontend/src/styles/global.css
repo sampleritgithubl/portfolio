@@ -68,6 +68,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -76,6 +77,13 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: auto;
+}
+
+/* Ensure canvases do not block vertical page touch scroll */
+canvas {
+  touch-action: pan-y !important;
 }
 
 /* Custom cursor only on non-admin pages on devices with mice */
