@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiCheck, FiX, FiAlertCircle } from 'react-icons/fi';
 import { usePortfolio, API_BASE } from '../../../context/PortfolioContext';
 import type { Project } from '../../../context/PortfolioContext';
+import ImageUploader from './ImageUploader';
 
 export default function AdminProjects() {
   const { data, updateDataLocally, refreshData } = usePortfolio();
@@ -282,17 +283,11 @@ export default function AdminProjects() {
                 </div>
               </div>
 
-              <div className="admin-field" style={{ marginBottom: '18px' }}>
-                <label className="admin-label">Cover Image URL</label>
-                <input
-                  type="url"
-                  className="admin-input"
-                  placeholder="https://images.unsplash.com/..."
-                  value={formData.image || ''}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  required
-                />
-              </div>
+              <ImageUploader
+                label="Cover Image"
+                value={formData.image || ''}
+                onChange={(url) => setFormData({ ...formData, image: url })}
+              />
 
               <div className="admin-field" style={{ marginBottom: '18px' }}>
                 <label className="admin-label">Technologies (comma-separated)</label>

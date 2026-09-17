@@ -534,6 +534,200 @@
   cursor: pointer;
 }
 
+/* ─── Image Uploader Component ─── */
+.img-uploader-wrapper {
+  margin-bottom: 18px;
+}
+
+.img-uploader-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--admin-border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.img-uploader-tab {
+  flex: 1;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: var(--admin-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.img-uploader-tab:not(:last-child) {
+  border-right: 1px solid var(--admin-border);
+}
+
+.img-uploader-tab.active {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(139, 92, 246, 0.12));
+  color: #fff;
+}
+
+.img-uploader-tab:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--admin-text-main);
+}
+
+.img-upload-dropzone {
+  border: 2px dashed var(--admin-border);
+  border-radius: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.img-upload-dropzone:hover {
+  border-color: rgba(0, 212, 255, 0.4);
+  background: rgba(0, 212, 255, 0.03);
+}
+
+.img-upload-dropzone.dragging {
+  border-color: var(--admin-cyan);
+  background: rgba(0, 212, 255, 0.06);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+.img-upload-dropzone.uploading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.img-upload-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+  display: block;
+  color: var(--admin-cyan);
+  opacity: 0.7;
+}
+
+.img-upload-text {
+  font-size: 14px;
+  color: var(--admin-text-muted);
+  margin-bottom: 6px;
+}
+
+.img-upload-text strong {
+  color: var(--admin-cyan);
+}
+
+.img-upload-hint {
+  font-size: 11.5px;
+  color: rgba(139, 154, 190, 0.6);
+}
+
+.img-upload-input {
+  display: none;
+}
+
+/* Upload progress bar */
+.img-upload-progress {
+  margin-top: 16px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.img-upload-progress-bar {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--admin-cyan), var(--admin-violet));
+  transition: width 0.3s ease;
+}
+
+.img-upload-status {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--admin-cyan);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.img-upload-status.error {
+  color: #ef4444;
+}
+
+/* Preview area */
+.img-preview-area {
+  margin-top: 14px;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--admin-border);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.img-preview-area img {
+  display: block;
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.img-preview-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.85);
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.img-preview-remove:hover {
+  background: #ef4444;
+  transform: scale(1.1);
+}
+
+.img-preview-filename {
+  padding: 8px 12px;
+  font-size: 11.5px;
+  color: var(--admin-text-muted);
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Spinning loader */
+@keyframes img-upload-spin {
+  to { transform: rotate(360deg); }
+}
+
+.img-upload-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 212, 255, 0.2);
+  border-top-color: var(--admin-cyan);
+  border-radius: 50%;
+  animation: img-upload-spin 0.6s linear infinite;
+  display: inline-block;
+}
+
 @media (max-width: 900px) {
   .admin-sidebar {
     transform: translateX(-100%);
@@ -555,5 +749,8 @@
   }
   .admin-topbar {
     padding: 0 16px;
+  }
+  .img-upload-dropzone {
+    padding: 24px 16px;
   }
 }
