@@ -8,6 +8,25 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// ─── Database Initialization ───
+const { initDatabase, seedFromLocalIfEmpty, isMongoConnected } = require('./db');
+const fs = require('fs');
+
+(async () => {
+  const connected = await initDatabase();
+  if (connected) {
+    try {
+      const localPortfolioPath = path.join(__dirname, 'data', 'portfolio.json');
+      if (fs.existsSync(localPortfolioPath)) {
+        const localData = JSON.parse(fs.readFileSync(localPortfolioPath, 'utf8'));
+        await seedFromLocalIfEmpty(localData);
+      }
+    } catch (err) {
+      console.warn('Seed error:', err.message);
+    }
+  }
+})();
+
 app.enable('trust proxy');
 app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '10mb' }));
@@ -120,8 +139,8 @@ app.post('/api/contact', async (req, res) => {
     return res.status(400).json({ error: 'All fields are required.' });
   }
 
-  // 1. Save message to database (messages.json)
-  const savedMessage = saveIncomingMessage({ name, email, subject, message });
+  // 1. Save message to database (MongoDB / messages.json)
+  const savedMessage = await saveIncomingMessage({ name, email, subject, message });
 
   const mailOptions = {
     from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,

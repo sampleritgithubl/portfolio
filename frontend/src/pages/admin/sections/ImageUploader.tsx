@@ -98,19 +98,24 @@ export default function ImageUploader({ value, onChange, label = 'Cover Image' }
       setUploadedFileName(`${file.name} (Optimized WebP • ${sizeKb} KB)`);
       setProgress(90);
 
-      // 3. Also upload raw file to backend as server backup (if backend reachable)
+      // 3. Also upload raw file to backend (if Cloudinary is configured, use the permanent CDN URL)
       try {
         const token = localStorage.getItem('adminToken');
         if (token) {
           const formData = new FormData();
           formData.append('image', file);
-          fetch(`${API_BASE}/api/admin/upload`, {
+          const uploadRes = await fetch(`${API_BASE}/api/admin/upload`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}` },
             body: formData
-          }).catch(() => {
-            // Server copy is secondary; dataUrl is already 100% saved
           });
+          if (uploadRes.ok) {
+            const uploadJson = await uploadRes.json();
+            if (uploadJson.provider === 'cloudinary' && uploadJson.url) {
+              onChange(uploadJson.url);
+              setUploadedFileName(`${file.name} (Cloudinary CDN Permanent)`);
+            }
+          }
         }
       } catch (_) {}
 

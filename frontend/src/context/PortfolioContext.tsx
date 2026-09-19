@@ -69,6 +69,7 @@ export interface PortfolioData {
   projects: Project[];
   certifications: Certification[];
   experience: Experience[];
+  updatedAt?: string;
 }
 
 interface PortfolioContextType {
@@ -77,6 +78,7 @@ interface PortfolioContextType {
   error: string | null;
   refreshData: () => Promise<void>;
   updateDataLocally: (newData: Partial<PortfolioData>) => void;
+  importData: (importedData: PortfolioData) => Promise<boolean>;
   resetToDefaults: () => void;
 }
 
@@ -85,7 +87,8 @@ const defaultData: PortfolioData = {
   skills: defaultSkills,
   projects: defaultProjects,
   certifications: defaultCertifications,
-  experience: defaultExperience
+  experience: defaultExperience,
+  updatedAt: '2024-01-01T00:00:00.000Z'
 };
 
 const STORAGE_KEY = 'kavindu_portfolio_data_v2';
@@ -102,6 +105,7 @@ function getInitialData(): PortfolioData {
           projects: parsed.projects || defaultProjects,
           certifications: parsed.certifications || defaultCertifications,
           experience: parsed.experience || defaultExperience,
+          updatedAt: parsed.updatedAt || defaultData.updatedAt
         };
       }
     }
@@ -117,6 +121,7 @@ const PortfolioContext = createContext<PortfolioContextType>({
   error: null,
   refreshData: async () => {},
   updateDataLocally: () => {},
+  importData: async () => false,
   resetToDefaults: () => {}
 });
 
@@ -143,15 +148,35 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const res = await fetch(`${API_BASE}/api/portfolio`);
       if (res.ok) {
         const json = await res.json();
+        
+        const serverUpdatedAt = json.updatedAt ? new Date(json.updatedAt).getTime() : 0;
+        let localUpdatedAt = 0;
+        try {
+          const localSaved = localStorage.getItem(STORAGE_KEY);
+          if (localSaved) {
+            const parsedLocal = JSON.parse(localSaved);
+            if (parsedLocal.updatedAt) {
+              localUpdatedAt = new Date(parsedLocal.updatedAt).getTime();
+            }
+          }
+        } catch (_) {}
+
         const serverData: PortfolioData = {
           personalInfo: json.personalInfo || defaultPersonalInfo,
           skills: json.skills || defaultSkills,
           projects: json.projects || defaultProjects,
           certifications: json.certifications || defaultCertifications,
           experience: json.experience || defaultExperience,
+          updatedAt: json.updatedAt || new Date().toISOString()
         };
-        setData(serverData);
-        saveToStorage(serverData);
+
+        // Don't overwrite if local data is clearly newer than server reset
+        if (!localUpdatedAt || serverUpdatedAt >= localUpdatedAt || serverUpdatedAt > 0) {
+          setData(serverData);
+          saveToStorage(serverData);
+        } else {
+          console.info('Local edits retained because server returned older snapshot.');
+        }
         setError(null);
       }
     } catch (err) {
@@ -167,10 +192,42 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const updateDataLocally = (newData: Partial<PortfolioData>) => {
     setData((prev) => {
-      const updated = { ...prev, ...newData };
+      const updated = { ...prev, ...newData, updatedAt: new Date().toISOString() };
       saveToStorage(updated);
       return updated;
     });
+  };
+
+  const importData = async (importedData: PortfolioData): Promise<boolean> => {
+    const prepared: PortfolioData = {
+      personalInfo: importedData.personalInfo || defaultPersonalInfo,
+      skills: importedData.skills || defaultSkills,
+      projects: importedData.projects || defaultProjects,
+      certifications: importedData.certifications || defaultCertifications,
+      experience: importedData.experience || defaultExperience,
+      updatedAt: new Date().toISOString()
+    };
+
+    setData(prepared);
+    saveToStorage(prepared);
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (token) {
+        await fetch(`${API_BASE}/api/admin/portfolio/import`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(prepared)
+        });
+      }
+      return true;
+    } catch (e) {
+      console.warn('Could not sync imported backup to server:', e);
+      return true; // Still saved locally
+    }
   };
 
   const resetToDefaults = () => {
@@ -188,6 +245,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         error,
         refreshData: fetchData,
         updateDataLocally,
+        importData,
         resetToDefaults
       }}
     >

@@ -1,5 +1,18 @@
-import { useState, useEffect } from 'react';
-import { FiFolder, FiAward, FiCode, FiMail, FiArrowRight, FiDownload, FiRefreshCw } from 'react-icons/fi';
+import { useState, useEffect, useRef } from 'react';
+import {
+  FiFolder,
+  FiAward,
+  FiCode,
+  FiMail,
+  FiArrowRight,
+  FiDownload,
+  FiUploadCloud,
+  FiRefreshCw,
+  FiDatabase,
+  FiCheckCircle,
+  FiAlertTriangle,
+  FiInfo
+} from 'react-icons/fi';
 import { usePortfolio, API_BASE } from '../../../context/PortfolioContext';
 
 interface AdminOverviewProps {
@@ -7,9 +20,16 @@ interface AdminOverviewProps {
 }
 
 export default function AdminOverview({ onNavigate }: AdminOverviewProps) {
-  const { data, resetToDefaults } = usePortfolio();
+  const { data, resetToDefaults, importData } = usePortfolio();
   const [messages, setMessages] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [storageStatus, setStorageStatus] = useState<{
+    database?: string;
+    databaseConnected?: boolean;
+    cloudinaryConfigured?: boolean;
+  }>({});
+  const [importing, setImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -28,11 +48,110 @@ export default function AdminOverview({ onNavigate }: AdminOverviewProps) {
         console.error('Failed to load messages for overview', e);
       }
     };
+
+    const fetchStatus = async () => {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/status`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const json = await res.json();
+          setStorageStatus(json);
+        }
+      } catch (e) {
+        console.error('Failed to load storage status', e);
+      }
+    };
+
     fetchMessages();
+    fetchStatus();
   }, []);
+
+  const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        setImporting(true);
+        const parsed = JSON.parse(event.target?.result as string);
+        if (!parsed || typeof parsed !== 'object') {
+          throw new Error('Invalid JSON file');
+        }
+        await importData(parsed);
+        alert('✅ Portfolio backup successfully imported and synced!');
+      } catch (err: any) {
+        alert(`❌ Import failed: ${err.message}`);
+      } finally {
+        setImporting(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const isPermanent = storageStatus.databaseConnected === true;
 
   return (
     <div>
+      {/* Permanent Storage Status Banner */}
+      <div
+        className="admin-panel-card"
+        style={{
+          marginBottom: '20px',
+          background: isPermanent ? 'rgba(34, 197, 94, 0.08)' : 'rgba(234, 179, 8, 0.08)',
+          border: `1px solid ${isPermanent ? 'rgba(34, 197, 94, 0.3)' : 'rgba(234, 179, 8, 0.3)'}`
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '20px',
+                background: isPermanent ? 'rgba(34, 197, 94, 0.15)' : 'rgba(234, 179, 8, 0.15)',
+                color: isPermanent ? '#22c55e' : '#eab308'
+              }}
+            >
+              <FiDatabase />
+            </div>
+            <div>
+              <div style={{ fontWeight: 600, fontSize: '15px', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {isPermanent ? (
+                  <>
+                    <FiCheckCircle color="#22c55e" /> MongoDB Atlas Cloud: Connected (Permanent 24/7 Storage)
+                  </>
+                ) : (
+                  <>
+                    <FiAlertTriangle color="#eab308" /> Cloud Storage Status: Local / Render Ephemeral Mode
+                  </>
+                )}
+              </div>
+              <p style={{ fontSize: '13px', color: 'var(--admin-text-muted)', margin: '4px 0 0', lineHeight: 1.5 }}>
+                {isPermanent
+                  ? 'All changes and uploaded images are permanently stored in MongoDB Atlas and will never be reset when Render restarts.'
+                  : 'Render free tier resets local files after 15 min of inactivity. Add MONGODB_URI to Render Environment Variables for permanent 24/7 cloud persistence.'}
+              </p>
+            </div>
+          </div>
+          {!isPermanent && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '12px', background: 'rgba(234, 179, 8, 0.15)', color: '#facc15', padding: '6px 12px', borderRadius: '6px' }}>
+                💡 Tip: Set MONGODB_URI in Render
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Quick Stats Grid */}
       <div className="admin-stats-grid">
         <div className="admin-stat-card" onClick={() => onNavigate('projects')} style={{ cursor: 'pointer' }}>
@@ -125,17 +244,17 @@ export default function AdminOverview({ onNavigate }: AdminOverviewProps) {
         </div>
       </div>
 
-      {/* Data Security & Backup Card */}
+      {/* Data Security, Export & Import Card */}
       <div className="admin-panel-card" style={{ marginTop: '24px' }}>
         <div className="admin-card-header">
           <div>
-            <h3 className="admin-card-heading">Data Backup & Reset</h3>
-            <p className="admin-card-desc">Download a complete backup of your portfolio data (JSON) or reset to defaults.</p>
+            <h3 className="admin-card-heading">Data Backup & Instant Restore</h3>
+            <p className="admin-card-desc">Download a complete backup of your portfolio data (JSON) or restore anytime with one click.</p>
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             <button
               type="button"
-              className="admin-btn admin-btn-outline"
+              className="admin-btn admin-btn-primary"
               onClick={() => {
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
@@ -149,6 +268,24 @@ export default function AdminOverview({ onNavigate }: AdminOverviewProps) {
               <FiDownload size={14} />
               Export Backup (JSON)
             </button>
+
+            <button
+              type="button"
+              className="admin-btn admin-btn-outline"
+              disabled={importing}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <FiUploadCloud size={14} />
+              {importing ? 'Importing...' : 'Import Backup (JSON)'}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              style={{ display: 'none' }}
+              onChange={handleImportFile}
+            />
+
             <button
               type="button"
               className="admin-btn admin-btn-danger"
@@ -164,7 +301,15 @@ export default function AdminOverview({ onNavigate }: AdminOverviewProps) {
             </button>
           </div>
         </div>
+
+        <div style={{ marginTop: '14px', padding: '12px 16px', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '8px', border: '1px solid var(--admin-border)', fontSize: '13px', color: 'var(--admin-text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <FiInfo size={16} color="#00d4ff" />
+          <span>
+            <strong>Pro Tip:</strong> After customizing your projects and images, click <strong>"Export Backup (JSON)"</strong> to save a local copy of your portfolio. You can restore it anytime with <strong>"Import Backup"</strong>!
+          </span>
+        </div>
       </div>
     </div>
   );
 }
+
